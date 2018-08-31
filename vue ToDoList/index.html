@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>vue-demo</title>
+    <style>
+      .complete{
+        text-decoration: line-through;
+      }
+    </style>
+  </head>
+  <!--<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>-->
+  <!--$remove好像再高版本中没有这个函数？？？-->
+  <script src="https://lib.baomitu.com/vue/1.0.0/vue.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <body>
+  <div id="app">
+    <!--使用自定义的组件；-->
+
+    <item-app :list="items">
+
+    </item-app>
+  </div>
+<!--  组件模块化；-->
+    <template id="item-tempalte">
+    <ul>
+      <h1 >my tasks:
+        <span v-show="remaining">（{{remaining}}）  </span>
+      </h1>
+      <li @click="togItems(item)" :class="{'complete':item.complete}" v-for="item in list">{{item.body}} <strong @click="deleteTask(item)">X</strong></li>
+    </ul>
+    </template>
+
+  <script>
+    Vue.component('item-app',//注册组件；
+      {template:'#item-tempalte',
+        props:['list'],
+        methods:{
+          togItems:function (item) {
+            item.complete=!item.complete
+
+          },
+          deleteTask:function (item) {
+            this.list.$remove(item);
+          }
+        },
+        computed:{
+        remaining:function(){
+          return this.list.filter(function (item) {
+            return !item.complete;
+          }).length;
+        }
+        }
+    });
+    new Vue({
+      el:"#app",
+      data:{
+        title:'My Tasks:',
+        items:[
+          {body:'see movie',complete:false},
+          {body:'go to study',complete:true},
+          {body:'go shopping',complete:false}
+        ]
+      },
+
+    })
+      </script>
+  </body>
+</html>
